@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Result()))
                   },
-              child: Text('GO'))
+              child: Text('SEARCH'))
         ],
       ),
     );
