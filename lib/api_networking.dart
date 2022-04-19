@@ -3,31 +3,47 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'main.dart';
 
-class Network {
-  var countryName = " ";
+var countryName = " ";
 
-  var countryCapital = " ";
+var countryCapital = " ";
 
-  void getData() async {
-    String query = inputISOquery;
-    http.Response response = await http.get(
-        Uri.parse('https://wft-geo-db.p.rapidapi.com/v1/geo/countries/$query'),
-        headers: {
-          'x-rapidapi-host': 'wft-geo-db.p.rapidapi.com',
-          'x-rapidapi-key': '228b639b3bmsha3d5a2853287f8fp12033djsn1ec5e589b9bc'
-        });
-    if (response.statusCode == 200) {
-      // print(response.body);
-      countryName = jsonDecode(response.body)["data"]["name"];
-      // print(query);
-      // print(countryName);
+Future<Album> getData() async {
+  String query = inputISOquery.toUpperCase();
+  http.Response response = await http.get(
+      Uri.parse('https://wft-geo-db.p.rapidapi.com/v1/geo/countries/$query'),
+      headers: {
+        'x-rapidapi-host': 'wft-geo-db.p.rapidapi.com',
+        'x-rapidapi-key': '228b639b3bmsha3d5a2853287f8fp12033djsn1ec5e589b9bc'
+      });
+  if (response.statusCode == 200) {
+    print(response.body);
+    countryName = jsonDecode(response.body)["data"]["name"];
+    // print("ISO Code: $query");
+    // print("COuntryName: $countryName");
 
-      countryCapital = jsonDecode(response.body)["data"]["capital"];
-      // print(countryCapital);
+    // countryCapital = jsonDecode(response.body)["data"]["capital"];
+    // print("Capital: $countryCapital");
 
-    } else {
-      print('errorFetchingDetails');
-    }
+    return Album.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('error cought');
+  }
+}
+
+class Album {
+  final String cName;
+  final String cCap;
+
+  const Album({
+    required this.cName,
+    required this.cCap,
+  });
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(
+      cName: json['data']['name'],
+      cCap: json['data']['capital'],
+    );
   }
 }
 
@@ -35,12 +51,13 @@ class Network {
 // import 'api_networking.dart';
 // import 'main.dart';
 
-void func() {
-  network.getData;
-  // print(network.countryName);
-  // print(network.countryCapital);
-  // print(network.countryName);
-}
+// void func() async {
+//   await getData;
+//   // print(network.countryName);
+//   // print(network.countryCapital);
+//   // print(network.countryName);
+
+// }
 
 class Result extends StatelessWidget {
   const Result({Key? key}) : super(key: key);
@@ -62,23 +79,44 @@ class Display extends StatefulWidget {
 }
 
 class _DisplayState extends State<Display> {
+  late Future<Album> fetch;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    func();
+    fetch = getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    // ignore: dead_code
     return Scaffold(
       body: Center(
-          child: Column(
-        children: [
-          Container(child: Text('ISO Code $inputISOquery')),
-          Container(child: Text(network.countryName)),
-          Container(child: Text(network.countryCapital))
-        ],
+          child: FutureBuilder<Album>(
+        future: fetch,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(children: [
+              Container(child: Text('ISO Code: $inputISOquery')),
+              Container(
+                  child:
+                      Text("Country Name: " + snapshot.data!.cName.toString())),
+              Container(
+                  child: Text(
+                      "Country Capital: " + snapshot.data!.cCap.toString()))
+            ]);
+          } else {
+            return Text('error');
+          }
+        },
+        // child: Column(
+        //       children: [
+        // Container(child: Text('ISO Code $inputISOquery')),
+        // Container(child: Text(network.countryName)),
+        // Container(child: Text(network.countryCapital))
+        //       ],
+        //     ),
       )),
     );
   }

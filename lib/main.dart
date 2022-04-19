@@ -1,11 +1,8 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'api_networking.dart';
 import 'displayData.dart';
 
-Network network = Network();
 String inputISOquery = " ";
 
 void main() {
@@ -48,7 +45,7 @@ class _MyAppState extends State<MyApp> {
         children: [
           Container(
             child: TextFormField(
-              onChanged: (value) => {inputISOquery = value},
+              onChanged: (value) => {inputISOquery = value.toUpperCase()},
               decoration: InputDecoration(hintText: 'Enter the ISO code'),
             ),
           ),
@@ -57,7 +54,6 @@ class _MyAppState extends State<MyApp> {
           ),
           ElevatedButton(
               onPressed: () => {
-                    network.getData(),
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Result()))
                   },
