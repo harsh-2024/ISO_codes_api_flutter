@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'main.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
 var countryName = " ";
 
@@ -90,34 +91,44 @@ class _DisplayState extends State<Display> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: dead_code
-    return Scaffold(
-      body: Center(
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
           child: FutureBuilder<Album>(
-        future: fetch,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(children: [
-              Container(child: Text('ISO Code: $inputISOquery')),
-              Container(
-                  child:
-                      Text("Country Name: " + snapshot.data!.cName.toString())),
-              Container(
-                  child: Text(
-                      "Country Capital: " + snapshot.data!.cCap.toString()))
-            ]);
-          } else {
-            return Text('error');
-          }
-        },
-        // child: Column(
-        //       children: [
-        // Container(child: Text('ISO Code $inputISOquery')),
-        // Container(child: Text(network.countryName)),
-        // Container(child: Text(network.countryCapital))
-        //       ],
-        //     ),
-      )),
+            future: fetch,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(children: [
+                  Container(child: Text('ISO Code: $inputISOquery')),
+                  Container(
+                      child: Text(
+                          "Country Name: " + snapshot.data!.cName.toString())),
+                  Container(
+                      child: Text(
+                          "Country Capital: " + snapshot.data!.cCap.toString()))
+                ]);
+              } else if (!snapshot.hasData) {
+                return Text('error');
+              } else {
+                return Text("error no data");
+              }
+
+              // else if(snapshot.data == "waiting"){
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   )
+              // }
+            },
+            // child: Column(
+            //       children: [
+            // Container(child: Text('ISO Code $inputISOquery')),
+            // Container(child: Text(network.countryName)),
+            // Container(child: Text(network.countryCapital))
+            //       ],
+            //     ),
+          ),
+        ),
+      ),
     );
   }
 }
