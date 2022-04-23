@@ -34,17 +34,15 @@ Future<Album> getData() async {
 class Album {
   final String cName;
   final String cCap;
+  final String cImage;
 
-  const Album({
-    required this.cName,
-    required this.cCap,
-  });
+  const Album({required this.cName, required this.cCap, required this.cImage});
 
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album(
-      cName: json['data']['name'],
-      cCap: json['data']['capital'],
-    );
+        cName: json['data']['name'],
+        cCap: json['data']['capital'],
+        cImage: json['data']['flagImageUri']);
   }
 }
 
@@ -93,22 +91,28 @@ class _DisplayState extends State<Display> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
+        backgroundColor: Colors.teal,
+        body: Container(
+          margin: EdgeInsets.all(10),
           child: FutureBuilder<Album>(
             future: fetch,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Column(children: [
-                  Container(child: Text('ISO Code: $inputISOquery')),
-                  Container(
-                      child: Text(
-                          "Country Name: " + snapshot.data!.cName.toString())),
-                  Container(
-                      child: Text(
-                          "Country Capital: " + snapshot.data!.cCap.toString()))
-                ]);
+                return ResultListTile(
+                  snapshot.data!.cCap,
+                  snapshot.data!.cName,
+                );
+                // Column(children: [
+                //   Container(child: Text('ISO Code: $inputISOquery')),
+                //   Container(
+                //       child: Text(
+                //           "Country Name: " + snapshot.data!.cName.toString())),
+                //   Container(
+                //       child: Text(
+                //           "Country Capital: " + snapshot.data!.cCap.toString()))
+                // ]);
               } else if (!snapshot.hasData) {
-                return Text('error');
+                return Text('Loading...');
               } else {
                 return Text("error no data");
               }
@@ -129,6 +133,28 @@ class _DisplayState extends State<Display> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ResultListTile extends StatelessWidget {
+  var count_cap;
+
+  var count_name;
+
+  // var count_image_url;
+
+  ResultListTile(this.count_cap, this.count_name);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      tileColor: Colors.black38,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Text(count_name),
+      subtitle: Text(count_cap),
+      // leading: Image.network(count_image_url),
+      leading: Image.asset('images/location-pin-solid.png'),
     );
   }
 }

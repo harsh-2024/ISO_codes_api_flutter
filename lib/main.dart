@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'api_networking.dart';
@@ -34,32 +35,40 @@ class _MyAppState extends State<MyApp> {
       child: Scaffold(
         backgroundColor: Colors.teal,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 300, left: 10, right: 10),
-              child: TextFormField(
-                focusNode: FocusNode(canRequestFocus: true),
-                onChanged: (value) => {inputISOquery = value.toUpperCase()},
-                decoration: InputDecoration(
-                    focusColor: Colors.black38,
-                    enabled: true,
-                    fillColor: Colors.white24,
-                    hintText: 'Enter the ISO code',
-                    labelText: 'ISO',
-                    border: OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                    )),
+            Center(
+              child: Expanded(
+                // margin: EdgeInsets.only(top: 300, left: 10, right: 10),
+                child: TextFormField(
+                  cursorColor: Colors.white12,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w300),
+                  focusNode: FocusNode(canRequestFocus: true),
+                  onChanged: (value) => {inputISOquery = value.toUpperCase()},
+                  decoration: InputDecoration(
+                      prefixIcon:
+                          Image.asset('images/search-solid.png', scale: 20),
+                      suffixIcon: Image.asset(
+                        'images/location-pin-solid.png',
+                        scale: 20,
+                      ),
+                      focusColor: Colors.black38,
+                      hintText: 'Enter the ISO code',
+                      labelText: 'ISO',
+                      labelStyle: TextStyle(color: Colors.black38),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(45.0),
+                          borderSide: BorderSide(color: Colors.black26)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: BorderSide(color: Colors.grey.shade600))),
+                ),
               ),
             ),
             SizedBox(
               height: 20,
             ),
-            // ElevatedButton(
-            //     onPressed: () => {
-            //           Navigator.push(context,
-            //               MaterialPageRoute(builder: (context) => Result()))
-            //         },
-            //     child: Text('SEARCH'))
             InkWell(
               onTap: () => Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Result())),
@@ -76,11 +85,4 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   widget;
-  // }
 }
